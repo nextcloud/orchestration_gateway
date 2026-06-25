@@ -9,16 +9,16 @@ namespace OCA\OrchestrationGateway\Service;
 
 use OCP\IL10N;
 
-
 class WebhookEventService {
 
-    public function __construct(
-        private IL10N $l10n,
-    ) {}
-        /**
+	public function __construct(
+		private IL10N $l10n,
+	) {
+	}
+	/**
 	 * List all events that can be registered as a webhook
 	 *
-	 * @return array>
+	 * @return array
 	 *
 	 */
 	public function listEvents(): array {
@@ -160,8 +160,6 @@ class WebhookEventService {
 			];
 		}
 
-
-
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeCreatedEvent')) {
 			$events[] = [
 				'name' => 'NodeCreatedEvent',
@@ -177,8 +175,6 @@ class WebhookEventService {
 				'path' => "OCP\Files\Events\Node\NodeTouchedEvent",
 			];
 		}
-
-
 
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeWrittenEvent')) {
 			$events[] = [
@@ -267,7 +263,6 @@ class WebhookEventService {
 				'path' => "OCA\Mail\Events\NewMessageReceivedEvent",
 			];
 		}
-
 
 		return $events;
 	}

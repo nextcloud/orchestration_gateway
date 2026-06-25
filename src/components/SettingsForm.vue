@@ -23,7 +23,7 @@
 			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
 			<NcSelect id="webhook-event"
 				v-model="localWebhook.event"
-				:options = availableEvents
+				:options="availableEvents"
 				required />
 		</p>
 		<div class="webhook-edit--footer">
@@ -51,7 +51,7 @@ export default {
 	components: {
 		NcButton,
 		CheckIcon,
-		NcSelect
+		NcSelect,
 	},
 	props: {
 		submitText: {

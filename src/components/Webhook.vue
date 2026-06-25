@@ -84,6 +84,7 @@ export default {
 	vertical-align: middle;
 	width: 100%;
 }
+
 .update-delete {
 	display: flex;
 	gap: 5px;

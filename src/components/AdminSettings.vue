@@ -197,6 +197,7 @@ export default {
 		gap: 8px;
 	}
 }
+
 .webhooks__table {
 		width: 100%;
 		border-collapse: collapse;

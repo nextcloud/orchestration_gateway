@@ -9,14 +9,18 @@
 TODO TO BE WRITTEN</description>
 	<version>1.0.0</version>
 	<licence>AGPL-3.0-or-later</licence>
-	<author mail="jana.peper@nextcloud.com" homepage="">Jana Peper</author>
+	<author mail="jana.peper@nextcloud.com">Jana Peper</author>
 	<namespace>OrchestrationGateway</namespace>
 	<category>integration</category>
 	<category>organization</category>
 	<bugs>https://github.com/TODOERSETZEN</bugs>
 	<dependencies>
-		<nextcloud min-version="34" max-version="35"/>
+		<nextcloud min-version="35" max-version="35"/>
 	</dependencies>
+	<settings>
+		<admin>OCA\OrchestrationGateway\Settings\Admin</admin>
+		<admin-section>OCA\OrchestrationGateway\Settings\AdminSection</admin-section>
+	</settings>
 	<navigations>
 		<navigation>
 			<id>orchestration_gateway</id>
@@ -26,8 +30,4 @@ TODO TO BE WRITTEN</description>
 			<type>link</type>
 		</navigation>
 	</navigations>
-	<settings>
-		<admin-section>OCA\OrchestrationGateway\Settings\AdminSection</admin-section><admin>OCA\OrchestrationGateway\Settings\Admin</admin>
-		<admin>OCA\OrchestrationGateway\Settings\Admin</admin>
-	</settings>
 </info>

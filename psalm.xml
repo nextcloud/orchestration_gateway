@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="1"
+    errorLevel="4"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    ensureOverrideAttribute="false"
+    strictBinaryOperands="false"
     findUnusedBaselineEntry="true"
-    findUnusedCode="true"
-	phpVersion="8.1"
+    findUnusedCode="false"
+	phpVersion="8.3"
 >
     <projectFiles>
         <directory name="lib" />
@@ -18,4 +20,15 @@
 	<extraFiles>
 		<directory name="vendor"/>
 	</extraFiles>
+    <issueHandlers>
+		<LessSpecificReturnStatement errorLevel="error"/>
+		<LessSpecificReturnType errorLevel="error"/>
+		<LessSpecificImplementedReturnType errorLevel="error"/>
+		<MoreSpecificReturnType errorLevel="error"/>
+		<UndefinedClass>
+			<errorLevel type="suppress">
+				<referencedClass name="OCA\WebhookListeners\Db\WebhookListenerMapper" />
+			</errorLevel>
+		</UndefinedClass>
+	</issueHandlers>
 </psalm>

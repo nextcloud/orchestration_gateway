@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OCA\OrchestrationGateway\Settings;
 
 use OCA\OrchestrationGateway\AppInfo\Application;
-
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\Settings\IIconSection;
