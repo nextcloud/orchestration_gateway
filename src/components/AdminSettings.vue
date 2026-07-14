@@ -47,7 +47,7 @@
 				</div>
 			</NcModal>
 
-			<table v-if="webhookListeners.length > 0" class="webhooks__table">
+			<v-table v-if="webhookListeners.length > 0" class="webhooks__table">
 				<thead>
 					<tr>
 						<th>
@@ -78,7 +78,7 @@
 						@edit="updateWebhook(webhook)"
 						@delete="deleteWebhook(webhook)" />
 				</tbody>
-			</table>
+			</v-table>
 
 			<NcModal v-if="editWebhook"
 				size="large"
