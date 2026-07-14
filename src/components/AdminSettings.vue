@@ -7,13 +7,22 @@
 		<NcSettingsSection
 			:name="t('orchestration_gateway', 'Webhook Listeners')"
 			:description="t('orchestration_gateway', 'here description of webhook listeners')">
-			<NcButton variant="secondary"
-				:text="t('orchestration_gateway', 'Register new webhook')"
-				@click="showNewWebhook = true">
-				<template #icon>
-					<PlusIcon :size="20" />
-				</template>
-			</NcButton>
+			<div class="add__buttons">
+				<NcButton variant="secondary"
+					:text="t('orchestration_gateway', 'Register new webhook')"
+					@click="showNewWebhook = true">
+					<template #icon>
+						<PlusIcon :size="20" />
+					</template>
+				</NcButton>
+				<NcButton variant="secondary"
+					:text="t('orchestration_gateway', 'Register new Budibase webhook')"
+					@click="showNewBudibase = true">
+					<template #icon>
+						<PlusIcon :size="20" />
+					</template>
+				</NcButton>
+			</div>
 
 			<NcModal v-if="showNewWebhook"
 				size="large"
@@ -21,10 +30,20 @@
 				:no-close="true">
 				<div class="webhookmodal__wrapper">
 					<h3>{{ t('orchestration_gateway', 'Register a new webhook') }}</h3>
+					<SettingsForm :webhook="newWebhook" @submit="onSubmit" @cancel-form="showNewWebhook=false" />
+				</div>
+			</NcModal>
+
+			<NcModal v-if="showNewBudibase"
+				size="large"
+				:name="t('orchestration_gateway', 'Register a new Budibase webhook')"
+				:no-close="true">
+				<div class="webhookmodal__wrapper">
+					<h3>{{ t('orchestration_gateway', 'Register a new Budibase webhook') }}</h3>
 					<p class="settings-hint">
 						{{ t('orchestration_gateway', 'Configure your webhook to redirect back to {url}', { url: "test" }) }}
 					</p>
-					<SettingsForm :webhook="newWebhook" @submit="onSubmit" @cancel-form="showNewWebhook=false" />
+					<BudibaseForm :webhook="newWebhook" @submit="onSubmit" @cancel-form="showNewBudibase=false" />
 				</div>
 			</NcModal>
 
@@ -90,6 +109,7 @@ import axios from '@nextcloud/axios'
 
 import Webhook from './Webhook.vue'
 import SettingsForm from './SettingsForm.vue'
+import BudibaseForm from './BudibaseForm.vue'
 
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import FlowchartSymbol from './icons/FlowchartIcon.vue'
@@ -104,6 +124,7 @@ export default {
 		NcSettingsSection,
 		NcModal,
 		SettingsForm,
+		BudibaseForm,
 		NcButton,
 	},
 
@@ -113,6 +134,7 @@ export default {
 		return {
 			webhookListeners: loadState('orchestration_gateway', 'webhook-listeners'),
 			showNewWebhook: false,
+			showNewBudibase: false,
 			editWebhook: null,
 			newWebhook: {
 				id: '',
@@ -161,6 +183,7 @@ export default {
 				this.newWebhook.httpMethod = ''
 				this.newWebhook.event = ''
 				this.showNewWebhook = false
+				this.showNewBudibase = false
 			} catch (error) {
 				console.error('Could not register a webhook: ' + error.message, { error })
 				showError(t('user_oidc', 'Could not register webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
@@ -231,6 +254,11 @@ export default {
 			width: calc(2 * var(--default-clickable-area) + 3 * 5px);
 		}
 	}
+
+.add__buttons {
+	display: flex;
+	gap: 5px;
+}
 
 .webhookmodal__wrapper {
 	margin: 20px;

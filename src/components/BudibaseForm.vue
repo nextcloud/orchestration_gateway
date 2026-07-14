@@ -6,26 +6,31 @@
 <template>
 	<form class="webhook-edit">
 		<p>
-			<label for="webhook-http-method">{{ t('orchestration_gateway', 'HTTP Method') }}</label>
-			<input id="webhook-http-method"
-				v-model="localWebhook.httpMethod"
-				type="text"
-				required>
-		</p>
-		<p>
-			<label for="webhook-uri">{{ t('orchestration_gateway', 'URI') }}</label>
-			<input id="webhook-uri"
-				v-model="localWebhook.uri"
-				type="text"
-				required>
-		</p>
-		<p>
 			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
 			<NcSelect id="webhook-event"
 				v-model="localWebhook.event"
 				:options="availableEvents"
 				required />
 		</p>
+		<p>
+			<label for="webhook-schema-url">{{ t('orchestration_gateway', 'Schema URL') }}</label>
+			<input id="webhook-schema-url"
+				v-model="schemaUrl"
+				type="text"
+				required>
+		</p>
+		<NcButton variant="secondary"
+			:text="t('orchestration_gateway', 'Send schema request')"
+			:disabled="!schemaUrl || !localWebhook.event"
+			@click="sendSchema" />
+		<p>
+			<label for="webhook-uri">{{ t('orchestration_gateway', 'Trigger URL') }}</label>
+			<input id="webhook-uri"
+				v-model="localWebhook.uri"
+				type="text"
+				required>
+		</p>
+
 		<div class="webhook-edit--footer">
 			<NcButton @click="$emit('cancel-form')">
 				{{ t('orchestration_gateway', 'Cancel') }}
@@ -44,12 +49,16 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
+import { generateUrl } from '@nextcloud/router'
+import { showError, showSuccess } from '@nextcloud/dialogs'
 import CheckIcon from 'vue-material-design-icons/Check.vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcSelect from '@nextcloud/vue/components/NcSelect'
 
+import axios from '@nextcloud/axios'
+
 export default {
-	name: 'SettingsForm',
+	name: 'BudibaseForm',
 	components: {
 		NcButton,
 		CheckIcon,
@@ -77,16 +86,32 @@ export default {
 		return {
 			availableEvents: loadState('orchestration_gateway', 'webhook-events'),
 			localWebhook: null,
+			schemaUrl: null,
 		}
 	},
 	computed: {
 	},
 	created() {
 		this.localWebhook = this.webhook
+		this.localWebhook.httpMethod = 'POST'
 	},
 	mounted() {
 	},
 	methods: {
+
+		async sendSchema() {
+			const url = generateUrl('/apps/orchestration_gateway/send-schema')
+			try {
+				await axios.post(url, { url: this.schemaUrl, event: this.localWebhook.event })
+				showSuccess(t('orchestration_gateway', 'Schema request sent'))
+			} catch (error) {
+				console.error(error)
+				showError(
+					t('integration_openai', 'Failed to send schema request'),
+					{ timeout: 10000 },
+				)
+			}
+		},
 	},
 }
 </script>
