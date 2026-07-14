@@ -7,7 +7,7 @@
 	<form class="webhook-edit">
 		<p>
 			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
-			<NcSelect id="webhook-event"
+			<NcSelect class="webhook-event"
 				v-model="localWebhook.event"
 				:options="availableEvents"
 				required />
@@ -148,6 +148,7 @@ export default {
 	p {
 		display: flex;
 		align-items: center;
+		width: 100%;
 		label {
 			width: 160px;
 			display: inline-block;
@@ -160,6 +161,10 @@ export default {
 		.italic-placeholder::placeholder {
 			font-style: italic;
 		}
+	}
+
+	.webhook-event {
+		flex-grow: 1;
 	}
 }
 </style>

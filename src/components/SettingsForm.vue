@@ -13,18 +13,18 @@
 				required>
 		</p>
 		<p>
+			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
+			<NcSelect class="webhook-event"
+				v-model="localWebhook.event"
+				:options="availableEvents"
+				required />
+		</p>
+		<p>
 			<label for="webhook-uri">{{ t('orchestration_gateway', 'URI') }}</label>
 			<input id="webhook-uri"
 				v-model="localWebhook.uri"
 				type="text"
 				required>
-		</p>
-		<p>
-			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
-			<NcSelect id="webhook-event"
-				v-model="localWebhook.event"
-				:options="availableEvents"
-				required />
 		</p>
 		<div class="webhook-edit--footer">
 			<NcButton @click="$emit('cancel-form')">
@@ -135,6 +135,10 @@ export default {
 		.italic-placeholder::placeholder {
 			font-style: italic;
 		}
+	}
+
+	.webhook-event {
+		flex-grow: 1;
 	}
 }
 </style>
