@@ -81,6 +81,7 @@ td {
 	padding: 5px 10px 5px 10px;
 	max-width: 800px;
 }
+
 .webhook__code {
 	display: inline-block;
 	overflow-x: scroll;
