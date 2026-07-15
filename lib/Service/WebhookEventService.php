@@ -7,6 +7,7 @@
 
 namespace OCA\OrchestrationGateway\Service;
 
+use Exception;
 use OCP\IL10N;
 
 class WebhookEventService {
@@ -24,7 +25,11 @@ class WebhookEventService {
 	 */
 	public function getSchema(string $path): array {
 		$events = $this->listEvents();
-		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path);
+		if (!in_array($path, array_column($events, 'path'))) {
+			throw new Exception('Event not available');
+		}
+
+		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path)
 		$event = reset($filteredEvent);
 
 		return $event['parameters'];

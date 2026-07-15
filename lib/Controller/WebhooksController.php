@@ -33,7 +33,12 @@ class WebhooksController extends Controller {
 	#[FrontpageRoute(verb: 'POST', url: '/send-schema')]
 	public function sendSchema(string $url, string $event): DataResponse {
 		try {
-			$response = $this->apiService->request($url, params: $this->eventService->getSchema($event), method: 'POST');
+			try {
+				$params = $this->eventService->getSchema($event);
+			} catch (\Throwable $e) {
+				return new DataResponse('Failed to get the event schema', Http::STATUS_BAD_REQUEST);
+			}
+			$response = $this->apiService->request($url, params: $params, method: 'POST');
 		} catch (Exception $e) {
 			return new DataResponse($e->getMessage(), Http::STATUS_BAD_REQUEST);
 		}
