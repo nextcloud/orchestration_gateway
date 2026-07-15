@@ -14,8 +14,8 @@
 		</p>
 		<p>
 			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
-			<NcSelect class="webhook-event"
-				v-model="localWebhook.event"
+			<NcSelect v-model="localWebhook.event"
+				class="webhook-event"
 				:options="availableEvents"
 				required />
 		</p>
