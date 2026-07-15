@@ -24,8 +24,8 @@ class WebhookEventService {
 	 */
 	public function getSchema(string $path): array {
 		$events = $this->listEvents();
-		;
-		$event = reset(array_filter($events, fn ($value) => $value['path'] === $path));
+		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path);
+		$event = reset($filteredEvent);
 
 		return $event['parameters'];
 	}
