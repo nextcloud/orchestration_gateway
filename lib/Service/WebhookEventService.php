@@ -18,17 +18,17 @@ class WebhookEventService {
 
 	/**
 	 * Get a parameter schema for an event
-	 * @param string $path source path of the event 
+	 * @param string $path source path of the event
 	 * @return array array of parameters
 	 *
 	 */
 	public function getSchema(string $path): array {
-		$events = $this->listEvents();;
+		$events = $this->listEvents();
+		;
 		$event = reset(array_filter($events, fn ($value) => $value['path'] === $path));
 
 		return $event['parameters'];
 	}
-
 
 	/**
 	 * List all events that can be registered as a webhook
@@ -113,7 +113,6 @@ class WebhookEventService {
 						'values' => 'null|array<int, mixed>',
 					]
 				],
-				
 			];
 		}
 
@@ -173,7 +172,6 @@ class WebhookEventService {
 							'component' => 'string|null',
 							'classification' => 'int',
 						],
-
 					]
 				],
 			];
@@ -234,7 +232,6 @@ class WebhookEventService {
 							'component' => 'string|null',
 							'classification' => 'int',
 						],
-
 					]
 				],
 			];
@@ -277,7 +274,6 @@ class WebhookEventService {
 							'component' => 'string|null',
 							'classification' => 'int',
 						],
-
 					]
 				],
 			];
@@ -320,7 +316,6 @@ class WebhookEventService {
 							'component' => 'string|null',
 							'classification' => 'int',
 						],
-
 					]
 				],
 			];
@@ -363,7 +358,6 @@ class WebhookEventService {
 							'component' => 'string|null',
 							'classification' => 'int',
 						],
-
 					]
 				],
 			];
@@ -464,7 +458,7 @@ class WebhookEventService {
 					],
 				],
 			];
-			
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\BeforeNodeRestoredEvent')) {
@@ -531,7 +525,7 @@ class WebhookEventService {
 					],
 				],
 			];
-			
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeWrittenEvent')) {
@@ -548,7 +542,7 @@ class WebhookEventService {
 					],
 				],
 			];
-			
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeDeletedEvent')) {

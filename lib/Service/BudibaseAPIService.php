@@ -10,9 +10,9 @@ namespace OCA\OrchestrationGateway\Service;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use OCP\Config\IUserConfig;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
-use OCP\Config\IUserConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
@@ -38,7 +38,6 @@ class BudibaseAPIService {
 	) {
 		$this->client = $clientService->newClient();
 	}
-
 
 	/**
 	 * Make an authenticated HTTP request to Budibase

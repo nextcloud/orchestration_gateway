@@ -38,8 +38,7 @@ class WebhooksController extends Controller {
 			return new DataResponse($e->getMessage(), Http::STATUS_BAD_REQUEST);
 		}
 		if (!$response['ok']) {
-			return new DataResponse("Sending schema request unsuccessful", Http::STATUS_BAD_REQUEST);
-
+			return new DataResponse('Sending schema request unsuccessful', Http::STATUS_BAD_REQUEST);
 		}
 		return new DataResponse([]);
 	}
