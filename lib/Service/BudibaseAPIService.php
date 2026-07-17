@@ -71,11 +71,15 @@ class BudibaseAPIService {
 	 * @param string $method HTTP query method
 	 * @return array decoded request result or error
 	 */
-	public function request(string $url, array $params = [], string $method = 'GET'): array {
+	public function request(string $url, array $params = [], string $method = 'GET', bool $isJson = false): array {
 		try {
 
 			if (count($params) > 0) {
-				$options['body'] = $params;
+				if ($isJson) {
+					$options['json'] = $params;
+				} else {
+					$options['body'] = $params;
+				}
 			}
 
 			if ($method === 'GET') {
