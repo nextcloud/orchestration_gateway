@@ -92,8 +92,11 @@ export default {
 	computed: {
 	},
 	created() {
-		this.localWebhook = this.webhook
-		this.localWebhook.httpMethod = 'POST'
+		this.localWebhook = {
+			...this.webhook,
+			httpMethod: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+		}
 	},
 	mounted() {
 	},

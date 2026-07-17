@@ -141,6 +141,7 @@ export default {
 				uri: '',
 				httpMethod: '',
 				event: '',
+				headers: undefined,
 			},
 		}
 	},
@@ -168,20 +169,16 @@ export default {
 				showError(t('orchestration_gateway', 'Could not remove webhook: {msg}', { msg: error.message }))
 			}
 		},
-		async onSubmit() {
+		async onSubmit(webhook) {
 			await confirmPassword()
-			console.debug('Add new webhook', { data: this.newWebhook })
+			console.debug('Add new webhook', { data: webhook })
 
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks')
 			try {
-				const response = await axios.post(url, this.newWebhook)
+				const response = await axios.post(url, webhook)
 
 				this.webhookListeners.push(response.data.ocs.data)
 
-				this.newWebhook.id = ''
-				this.newWebhook.uri = ''
-				this.newWebhook.httpMethod = ''
-				this.newWebhook.event = ''
 				this.showNewWebhook = false
 				this.showNewBudibase = false
 			} catch (error) {

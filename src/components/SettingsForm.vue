@@ -82,7 +82,9 @@ export default {
 	computed: {
 	},
 	created() {
-		this.localWebhook = this.webhook
+		this.localWebhook = {
+			...this.webhook,
+		}
 	},
 	mounted() {
 	},
