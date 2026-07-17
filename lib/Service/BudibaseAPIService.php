@@ -47,8 +47,9 @@ class BudibaseAPIService {
 	public function checkSchemaUrl(string $url): bool {
 		$urlArray = parse_url($url);
 
-		if (!is_array($urlArray))
+		if (!is_array($urlArray)) {
 			return false;
+		}
 
 		if (!isset($urlArray['path']) || !str_contains($urlArray['path'], 'api/webhooks/schema/app_dev_')) {
 			return false;
