@@ -7,8 +7,10 @@ namespace OCA\OrchestrationGateway\Controller;
 use Exception;
 use OCA\OrchestrationGateway\Service\BudibaseAPIService;
 use OCA\OrchestrationGateway\Service\WebhookEventService;
+use OCA\OrchestrationGateway\Settings\Admin;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
@@ -31,6 +33,7 @@ class WebhooksController extends Controller {
 	 * @return DataResponse
 	 */
 	#[FrontpageRoute(verb: 'POST', url: '/send-schema')]
+	#[AuthorizedAdminSetting(settings: Admin::class)]
 	public function sendSchema(string $url, string $event): DataResponse {
 		if (!$this->apiService->checkSchemaUrl($url)) {
 			return new DataResponse('Invalid schema URL', Http::STATUS_BAD_REQUEST);
