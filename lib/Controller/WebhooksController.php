@@ -32,6 +32,9 @@ class WebhooksController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'POST', url: '/send-schema')]
 	public function sendSchema(string $url, string $event): DataResponse {
+		if (!$this->apiService->checkSchemaUrl($url)) {
+			return new DataResponse('Invalid schema URL', Http::STATUS_BAD_REQUEST);
+		}
 		try {
 			try {
 				$params = $this->eventService->getSchema($event);
@@ -43,7 +46,7 @@ class WebhooksController extends Controller {
 			return new DataResponse($e->getMessage(), Http::STATUS_BAD_REQUEST);
 		}
 		if (isset($response['error'])) {
-			return new DataResponse('Sending schema request unsuccessful', Http::STATUS_BAD_REQUEST);
+			return new DataResponse('Sending schema request unsuccessful: ' . $response['error'], Http::STATUS_BAD_REQUEST);
 		}
 		return new DataResponse([]);
 	}

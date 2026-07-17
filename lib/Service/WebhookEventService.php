@@ -29,7 +29,7 @@ class WebhookEventService {
 			throw new Exception('Event not available');
 		}
 
-		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path)
+		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path);
 		$event = reset($filteredEvent);
 
 		return $event['parameters'];

@@ -40,6 +40,32 @@ class BudibaseAPIService {
 	}
 
 	/**
+	 * check if a provided URL matches the pattern for a Budibase schema URL
+	 * @param string $url
+	 * @return bool
+	 */
+	public function checkSchemaUrl(string $url): bool {
+		$urlArray = parse_url($url);
+
+		if (!is_array($urlArray))
+			return false;
+
+		if (!isset($urlArray['path']) || !str_contains($urlArray['path'], 'api/webhooks/schema/app_dev_')) {
+			return false;
+		}
+
+		if (isset($urlArray['user']) || isset($urlArray['pass']) || isset($urlArray['query'])) {
+			return false;
+		}
+
+		if (!in_array($urlArray['scheme'], ['http', 'https'], strict: true)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Make an authenticated HTTP request to Budibase
 	 * @param array $params Query parameters (key/val pairs)
 	 * @param string $method HTTP query method
