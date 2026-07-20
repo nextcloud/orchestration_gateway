@@ -7,6 +7,7 @@
 
 namespace OCA\OrchestrationGateway\Service;
 
+use Exception;
 use OCP\IL10N;
 
 class WebhookEventService {
@@ -15,6 +16,25 @@ class WebhookEventService {
 		private IL10N $l10n,
 	) {
 	}
+
+	/**
+	 * Get a parameter schema for an event
+	 * @param string $path source path of the event
+	 * @return array array of parameters
+	 *
+	 */
+	public function getSchema(string $path): array {
+		$events = $this->listEvents();
+		if (!in_array($path, array_column($events, 'path'))) {
+			throw new Exception('Event not available');
+		}
+
+		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path);
+		$event = reset($filteredEvent);
+
+		return $event['parameters'];
+	}
+
 	/**
 	 * List all events that can be registered as a webhook
 	 *
@@ -29,6 +49,37 @@ class WebhookEventService {
 				'name' => 'FormSubmittedEvent',
 				'description' => $this->l10n->t('A submission to a form in Nextcloud Forms'),
 				'path' => "OCA\Forms\Events\FormSubmittedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'form' => [
+							'id' => 'int',
+							'hash' => 'string',
+							'title' => 'string',
+							'description' => 'string',
+							'ownerId' => 'string',
+							'fileId' => 'string|null',
+							'fileFormat' => 'string|null',
+							'created' => 'int',
+							'access' => 'int',
+							'expires' => 'int',
+							'isAnonymous' => 'bool',
+							'submitMultiple' => 'bool',
+							'showExpiration' => 'bool',
+							'lastUpdated' => 'int',
+							'submissionMessage' => 'string|null',
+							'state' => 'int',
+						],
+						'submission' => [
+							'id' => 'int',
+							'formId' => 'int',
+							'userId' => 'string',
+							'timestamp' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -37,6 +88,17 @@ class WebhookEventService {
 				'name' => 'RowAddedEvent',
 				'description' => $this->l10n->t('A row has been added to a table in Nextcloud Tables'),
 				'path' => "OCA\Tables\Event\RowAddedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'tableId' => 'int',
+						'rowId' => 'int',
+						'previousValues' => ' null|array<int, mixed>',
+						'values' => 'null|array<int, mixed>',
+					]
+				],
 			];
 		}
 
@@ -45,6 +107,17 @@ class WebhookEventService {
 				'name' => 'RowDeletedEvent',
 				'description' => $this->l10n->t('A row has been deleted from a table in Nextcloud Tables'),
 				'path' => "OCA\Tables\Event\RowDeletedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'tableId' => 'int',
+						'rowId' => 'int',
+						'previousValues' => ' null|array<int, mixed>',
+						'values' => 'null|array<int, mixed>',
+					]
+				],
 			];
 		}
 
@@ -53,6 +126,17 @@ class WebhookEventService {
 				'name' => 'RowUpdatedEvent',
 				'description' => $this->l10n->t('A row has been updated in a table in Nextcloud Tables'),
 				'path' => "OCA\Tables\Event\RowUpdatedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'tableId' => 'int',
+						'rowId' => 'int',
+						'previousValues' => ' null|array<int, mixed>',
+						'values' => 'null|array<int, mixed>',
+					]
+				],
 			];
 		}
 
@@ -61,6 +145,40 @@ class WebhookEventService {
 				'name' => 'CalendarObjectCreatedEvent',
 				'description' => $this->l10n->t('A new object has been created in a Nextcloud calendar'),
 				'path' => "OCP\Calendar\Events\CalendarObjectCreatedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'calendarId' => 'int',
+						'calendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'shares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'objectData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'lastmodified' => 'int',
+							'etag' => 'string',
+							'calendarid' => 'int',
+							'size' => 'int',
+							'component' => 'string|null',
+							'classification' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -69,6 +187,58 @@ class WebhookEventService {
 				'name' => 'CalendarObjectMovedEvent',
 				'description' => $this->l10n->t('An object has been moved from a Nextcloud calendar to another'),
 				'path' => "OCP\Calendar\Events\CalendarObjectMovedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'sourceCalendarId' => 'int',
+						'sourceCalendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'targetCalendarId' => 'int',
+						'targetCalendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'sourceShares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'targetShares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'objectData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'lastmodified' => 'int',
+							'etag' => 'string',
+							'calendarid' => 'int',
+							'size' => 'int',
+							'component' => 'string|null',
+							'classification' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -77,6 +247,40 @@ class WebhookEventService {
 				'name' => 'CalendarObjectMovedToTrashEvent',
 				'description' => $this->l10n->t('An object has been moved to the trash in a Nextcloud calendar'),
 				'path' => "OCP\Calendar\Events\CalendarObjectMovedToTrashEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'calendarId' => 'int',
+						'calendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'shares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'objectData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'lastmodified' => 'int',
+							'etag' => 'string',
+							'calendarid' => 'int',
+							'size' => 'int',
+							'component' => 'string|null',
+							'classification' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -85,6 +289,40 @@ class WebhookEventService {
 				'name' => 'CalendarObjectRestoredEvent',
 				'description' => $this->l10n->t('An object has been restored from trash in a Nextcloud calendar'),
 				'path' => "OCP\Calendar\Events\CalendarObjectRestoredEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'calendarId' => 'int',
+						'calendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'shares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'objectData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'lastmodified' => 'int',
+							'etag' => 'string',
+							'calendarid' => 'int',
+							'size' => 'int',
+							'component' => 'string|null',
+							'classification' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -93,6 +331,40 @@ class WebhookEventService {
 				'name' => 'CalendarObjectUpdatedEvent',
 				'description' => $this->l10n->t('An object has been changed in a Nextcloud calendar'),
 				'path' => "OCP\Calendar\Events\CalendarObjectUpdatedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'calendarId' => 'int',
+						'calendarData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'{http://calendarserver.org/ns/}getctag' => 'string',
+							'{http://sabredav.org/ns}sync-token' => 'int',
+							'{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set' => 'Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet',
+							'{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp' => 'Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp',
+							'{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'string|null',
+						],
+						'shares' => [[
+							'href' => 'string',
+							'commonName' => 'string',
+							'status' => 'int',
+							'readOnly' => 'bool',
+							'{http://owncloud.org/ns}principal' => 'string',
+							'{http://owncloud.org/ns}group-share' => 'bool',
+						]],
+						'objectData' => [
+							'id' => 'int',
+							'uri' => 'string',
+							'lastmodified' => 'int',
+							'etag' => 'string',
+							'calendarid' => 'int',
+							'size' => 'int',
+							'component' => 'string|null',
+							'classification' => 'int',
+						],
+					]
+				],
 			];
 		}
 
@@ -101,6 +373,14 @@ class WebhookEventService {
 				'name' => 'BeforeNodeCreatedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be created'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeCreatedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -109,6 +389,14 @@ class WebhookEventService {
 				'name' => 'BeforeNodeTouchedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be changed'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeTouchedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -117,6 +405,14 @@ class WebhookEventService {
 				'name' => 'BeforeNodeWrittenEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be written'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeWrittenEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -125,6 +421,14 @@ class WebhookEventService {
 				'name' => 'BeforeNodeReadEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be read'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeReadEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -133,6 +437,14 @@ class WebhookEventService {
 				'name' => 'BeforeNodeDeletedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be deleted'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeDeletedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -141,7 +453,17 @@ class WebhookEventService {
 				'name' => 'BeforeNodeCopiedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be copied'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeCopiedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\BeforeNodeRestoredEvent')) {
@@ -149,6 +471,15 @@ class WebhookEventService {
 				'name' => 'BeforeNodeRestoredEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be restored'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeRestoredEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
 		}
 
@@ -157,6 +488,15 @@ class WebhookEventService {
 				'name' => 'BeforeNodeRenamedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) will be renamed'),
 				'path' => "OCP\Files\Events\Node\BeforeNodeRenamedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
 		}
 
@@ -165,6 +505,14 @@ class WebhookEventService {
 				'name' => 'NodeCreatedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been created'),
 				'path' => "OCP\Files\Events\Node\NodeCreatedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -173,7 +521,16 @@ class WebhookEventService {
 				'name' => 'NodeTouchedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been changed'),
 				'path' => "OCP\Files\Events\Node\NodeTouchedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeWrittenEvent')) {
@@ -181,7 +538,16 @@ class WebhookEventService {
 				'name' => 'NodeWrittenEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been written'),
 				'path' => "OCP\Files\Events\Node\NodeWrittenEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
+
 		}
 
 		if (class_exists('OCP\\Files\\Events\\Node\\NodeDeletedEvent')) {
@@ -189,6 +555,14 @@ class WebhookEventService {
 				'name' => 'NodeDeletedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been deleted'),
 				'path' => "OCP\Files\Events\Node\NodeDeletedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'node' => ['id' => 'string', 'path' => 'string']
+					],
+				],
 			];
 		}
 
@@ -197,6 +571,15 @@ class WebhookEventService {
 				'name' => 'NodeCopiedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been copied'),
 				'path' => "OCP\Files\Events\Node\NodeCopiedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
 		}
 
@@ -205,6 +588,15 @@ class WebhookEventService {
 				'name' => 'NodeRestoredEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been restored'),
 				'path' => "OCP\Files\Events\Node\NodeRestoredEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
 		}
 
@@ -213,6 +605,15 @@ class WebhookEventService {
 				'name' => 'NodeRenamedEvent',
 				'description' => $this->l10n->t('A node in Nextcloud (a file/folder/similar) has been renamed'),
 				'path' => "OCP\Files\Events\Node\NodeRenamedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'source' => ['id' => 'string', 'path' => 'string'],
+						'target' => ['id' => 'string', 'path' => 'string'],
+					],
+				],
 			];
 		}
 
@@ -221,6 +622,16 @@ class WebhookEventService {
 				'name' => 'TagAssignedEvent',
 				'description' => $this->l10n->t('A tag has been added to an object in Nextcloud'),
 				'path' => "OCP\SystemTag\TagAssignedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'objectType' => 'string (e.g. \'files\')',
+						'objectIds' => 'string[]',
+						'tagId' => 'int[]',
+					],
+				],
 			];
 		}
 
@@ -229,6 +640,16 @@ class WebhookEventService {
 				'name' => 'TagUnassignedEvent',
 				'description' => $this->l10n->t('A tag has been removed from an object in Nextcloud'),
 				'path' => "OCP\SystemTag\TagUnassignedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'objectType' => 'string (e.g. \'files\')',
+						'objectIds' => 'string[]',
+						'tagId' => 'int[]',
+					],
+				],
 			];
 		}
 
@@ -237,6 +658,73 @@ class WebhookEventService {
 				'name' => 'MessageSentEvent',
 				'description' => $this->l10n->t('A mail has been sent'),
 				'path' => "OCA\Mail\Events\MessageSentEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'message' => [
+							'id' => 'int',
+							'cc' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'to' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'bcc' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'raw' => 'string',
+							'from' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'type' => 'int',
+							'failed' => 'bool',
+							'isHtml' => 'bool',
+							'sendAt' => 'int',
+							'status' => 'int',
+							'aliasId' => 'int',
+							'subject' => 'string',
+							'bodyHtml' => 'string',
+							'accountId' => 'int',
+							'bodyPlain' => 'string',
+							'isPgpMime' => 'bool',
+							'smimeSign' => 'bool',
+							'updatedAt' => 'int',
+							'editorBody' => 'string',
+							'requestMdn' => 'bool',
+							'attachments' => [
+								'type' => 'string',
+								'messageId' => 'int',
+								'fileName' => 'string',
+								'mimeType' => 'string',
+							],
+							'smimeEncrypt' => 'bool',
+							'inReplyToMessageId' => 'int',
+							'smimeCertificateId' => 'int',
+						],
+					],
+				],
 			];
 		}
 
@@ -245,6 +733,16 @@ class WebhookEventService {
 				'name' => 'MessageDeletedEvent',
 				'description' => $this->l10n->t('A mail has been deleted'),
 				'path' => "OCA\Mail\Events\MessageDeletedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'accountId' => 'int',
+						'mailboxId' => 'int',
+						'messageId' => 'int',
+					],
+				],
 			];
 		}
 
@@ -253,6 +751,18 @@ class WebhookEventService {
 				'name' => 'MessageFlaggedEvent',
 				'description' => $this->l10n->t('A mail has been flagged'),
 				'path' => "OCA\Mail\Events\MessageFlaggedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'accountId' => 'int',
+						'mailboxId' => 'int',
+						'messageId' => 'int',
+						'flag' => 'string',
+						'set' => 'bool',
+					],
+				],
 			];
 		}
 
@@ -261,6 +771,84 @@ class WebhookEventService {
 				'name' => 'NewMessageReceivedEvent',
 				'description' => $this->l10n->t('A new mail has been received'),
 				'path' => "OCA\Mail\Events\NewMessageReceivedEvent",
+				'parameters' => [
+					'user' => ['uid' => 'string', 'displayName' => 'string'],
+					'time' => 'int',
+					'event' => [
+						'class' => 'string',
+						'messageUri' => 'string',
+						'message' => [
+							'uid' => 'int',
+							'cc' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'to' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'bcc' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'from' => [
+								'id' => 'int',
+								'type' => 'int',
+								'email' => 'string',
+								'label' => 'string',
+								'messageId' => 'int',
+								'localMessageId' => 'int',
+							],
+							'tags' => 'string[]',
+							'flags' => [
+								'seen' => 'bool',
+								'$junk' => 'bool',
+								'draft' => 'bool',
+								'deleted' => 'bool',
+								'flagged' => 'bool',
+								'$mdnsent' => 'bool',
+								'$notjunk' => 'bool',
+								'answered' => 'bool',
+								'forwarded' => 'bool',
+								'important' => 'bool',
+								'hasAttachments' => 'bool',
+							],
+							'avatar' => 'string',
+							'dateInt' => 'int',
+							'subject' => 'string',
+							'summary' => 'string',
+							'encrypted' => 'bool',
+							'inReplyTo' => 'string',
+							'mailboxId' => 'int',
+							'messageId' => 'string',
+							'databaseId' => 'int',
+							'mentionsMe' => 'bool',
+							'references' => 'string[]',
+							'attachments' => [
+								'type' => 'string',
+								'messageId' => 'int',
+								'fileName' => 'string',
+								'mimeType' => 'string',
+							],
+							'imipMessage' => 'bool',
+							'previewText' => 'string',
+							'threadRootId' => 'string',
+							'fetchAvatarFromClient' => 'bool',
+						]
+					],
+				],
 			];
 		}
 

@@ -12,16 +12,16 @@ use OCA\OrchestrationGateway\Service\WebhookEventService;
 use OCA\WebhookListeners\Db\WebhookListenerMapper;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IAppConfig;
-use OCP\Settings\ISettings;
+use OCP\IL10N;
+use OCP\Settings\IDelegatedSettings;
 
-class Admin implements ISettings {
+class Admin implements IDelegatedSettings {
 
 	public function __construct(
-		private IAppConfig $appConfig,
 		private IInitialState $initialStateService,
 		private WebhookEventService $eventService,
 		private WebhookListenerMapper $mapper,
+		private IL10N $l10n,
 	) {
 	}
 
@@ -43,5 +43,13 @@ class Admin implements ISettings {
 
 	public function getPriority(): int {
 		return 10;
+	}
+
+	public function getName(): string {
+		return $this->l10n->t('Orchestration gateway');
+	}
+
+	public function getAuthorizedAppConfig(): array {
+		return [];
 	}
 }
