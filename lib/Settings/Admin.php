@@ -30,7 +30,6 @@ class Admin implements IDelegatedSettings {
 	 */
 	public function getForm(): TemplateResponse {
 		$webhookListeners = $this->mapper->getAll();
-		error_log(json_encode($webhookListeners));
 		$events = array_column($this->eventService->listEvents(), 'path');
 
 		$this->initialStateService->provideInitialState('webhook-listeners', $webhookListeners);
