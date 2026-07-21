@@ -79,7 +79,7 @@ export default {
 			required: true,
 		},
 		eventFilter: {
-			type: Array,
+			type: String,
 			required: true,
 		},
 		userIdFilter: {
@@ -87,7 +87,7 @@ export default {
 			required: true,
 		},
 		tokenNeeded: {
-			type: Array,
+			type: String,
 			required: true,
 		},
 	},

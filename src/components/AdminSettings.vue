@@ -151,11 +151,11 @@ export default {
 			newWebhook: {
 				id: '',
 				uri: '',
-				httpMethod: '',
+				httpMethod: 'POST',
 				event: '',
-				eventFilter: '[]',
+				eventFilter: [],
 				userIdFilter: '',
-				tokenNeeded: '[]',
+				tokenNeeded: [],
 				headers: undefined,
 			},
 		}
@@ -189,6 +189,8 @@ export default {
 			await confirmPassword()
 			console.debug('Add new webhook', { data: webhook })
 
+			webhook.eventFilter = JSON.parse(webhook.eventFilterJson)
+			webhook.tokenNeeded = JSON.parse(webhook.includeAuth)
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks')
 			try {
 				const response = await axios.post(url, webhook)
@@ -209,6 +211,8 @@ export default {
 			await confirmPassword()
 			console.debug('Update webhook', { data: webhook })
 
+			webhook.eventFilter = JSON.parse(webhook.eventFilterJson)
+			webhook.tokenNeeded = JSON.parse(webhook.includeAuth)
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks/{id}', { id: webhook.id })
 			try {
 				await axios.post(url, webhook)

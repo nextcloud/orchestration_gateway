@@ -6,13 +6,6 @@
 <template>
 	<form class="webhook-edit">
 		<p>
-			<label for="webhook-http-method">{{ t('orchestration_gateway', 'HTTP Method') }}</label>
-			<input id="webhook-http-method"
-				v-model="localWebhook.httpMethod"
-				type="text"
-				required>
-		</p>
-		<p>
 			<label for="webhook-event">{{ t('orchestration_gateway', 'Event') }}</label>
 			<NcSelect v-model="localWebhook.event"
 				class="webhook-event"
@@ -20,9 +13,37 @@
 				required />
 		</p>
 		<p>
+			<label for="webhook-http-method">{{ t('orchestration_gateway', 'HTTP Method') }}</label>
+			<input id="webhook-http-method"
+				v-model="localWebhook.httpMethod"
+				type="text"
+				required>
+		</p>
+		<p>
 			<label for="webhook-uri">{{ t('orchestration_gateway', 'URI') }}</label>
 			<input id="webhook-uri"
 				v-model="localWebhook.uri"
+				type="text"
+				required>
+		</p>
+		<p>
+			<label for="webhook-event-filter">{{ t('orchestration_gateway', 'Event Filter') }}</label>
+			<input id="webhook-event-filter"
+				v-model="localWebhook.eventFilterJson"
+				type="text"
+				required>
+		</p>
+		<p>
+			<label for="webhook-user-filter">{{ t('orchestration_gateway', 'User ID Filter') }}</label>
+			<input id="webhook-user-filter"
+				v-model="localWebhook.userIdFilter"
+				type="text"
+				required>
+		</p>
+		<p>
+			<label for="webhook-auth">{{ t('orchestration_gateway', 'Include authorization for users') }}</label>
+			<input id="webhook-auth"
+				v-model="localWebhook.includeAuth"
 				type="text"
 				required>
 		</p>
@@ -84,6 +105,8 @@ export default {
 	created() {
 		this.localWebhook = {
 			...this.webhook,
+			eventFilterJson: JSON.stringify(this.webhook.eventFilter),
+			includeAuth: JSON.stringify(this.webhook.tokenNeeded),
 		}
 	},
 	mounted() {
