@@ -54,13 +54,22 @@
 							{{ t('orchestration_gateway', 'ID') }}
 						</th>
 						<th>
-							{{ t('orchestration_gateway', 'URI') }}
-						</th>
-						<th>
 							{{ t('orchestration_gateway', 'Event') }}
 						</th>
 						<th>
 							{{ t('orchestration_gateway', 'HTTP Method') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'URI') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'Event Filter') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'User ID Filter') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'Include authorization for users') }}
 						</th>
 						<th>
 							<span class="hidden-visually">{{ t('orchestration_gateway', 'Update or delete listener') }}</span>
@@ -75,6 +84,9 @@
 						:uri="webhook.uri"
 						:event="webhook.event"
 						:method="webhook.httpMethod"
+						:event-filter="webhook.eventFilter"
+						:user-id-filter="webhook.userIdFilter"
+						:token-needed="webhook.tokenNeeded"
 						@edit="updateWebhook(webhook)"
 						@delete="deleteWebhook(webhook)" />
 				</tbody>
@@ -141,6 +153,9 @@ export default {
 				uri: '',
 				httpMethod: '',
 				event: '',
+				eventFilter: '[]',
+				userIdFilter: '',
+				tokenNeeded: '[]',
 				headers: undefined,
 			},
 		}
@@ -150,6 +165,7 @@ export default {
 	},
 
 	mounted() {
+		console.error(this.webhookListeners)
 	},
 
 	methods: {
@@ -220,12 +236,13 @@ export default {
 
 .webhooks__table {
 		width: 100%;
+		max-width: 50%;
 		border-collapse: collapse;
 		table-layout: fixed;
 
 		th, td {
 			overflow: hidden;
-			padding: var(--default-grid-baseline);
+			padding: 5px 10px 5px 10px;
 			text-wrap: wrap;
 			overflow-wrap: break-word;
 		}
@@ -234,20 +251,8 @@ export default {
 			border-top: 1px solid var(--color-border);
 		}
 
-		th:nth-of-type(2), td:nth-of-type(2) {
-			width: 40%;
-		}
-
-		th:nth-of-type(3), td:nth-of-type(3) {
-			width: 40%;
-		}
-
-		th:nth-of-type(4), td:nth-of-type(4) {
-			width: 10%;
-		}
-
 		// the action column only needs to have the button size
-		th:nth-of-type(5), td:nth-of-type(5) {
+		th:nth-of-type(8), td:nth-of-type(8) {
 			width: calc(2 * var(--default-clickable-area) + 3 * 5px);
 		}
 	}

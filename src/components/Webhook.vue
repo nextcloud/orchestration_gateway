@@ -7,13 +7,22 @@
 	<tr>
 		<td>{{ id }}</td>
 		<td>
-			<code class="webhook__code">{{ uri }}</code>
-		</td>
-		<td>
 			<code class="webhook__code">{{ event }}</code>
 		</td>
 		<td>
 			{{ method }}
+		</td>
+		<td class="webhook__scrollable">
+			{{ uri }}
+		</td>
+		<td>
+			<code class="webhook__code">{{ eventFilter }}</code>
+		</td>
+		<td>
+			{{ userIdFilter }}
+		</td>
+		<td>
+			<code class="webhook__code">{{ tokenNeeded }}</code>
 		</td>
 		<td class="update-delete">
 			<NcButton
@@ -57,16 +66,28 @@ export default {
 			type: Number,
 			required: true,
 		},
-		uri: {
-			type: String,
-			required: true,
-		},
 		event: {
 			type: String,
 			required: true,
 		},
 		method: {
 			type: String,
+			required: true,
+		},
+		uri: {
+			type: String,
+			required: true,
+		},
+		eventFilter: {
+			type: Array,
+			required: true,
+		},
+		userIdFilter: {
+			type: String,
+			required: true,
+		},
+		tokenNeeded: {
+			type: Array,
 			required: true,
 		},
 	},
@@ -83,6 +104,15 @@ td {
 }
 
 .webhook__code {
+	display: inline-block;
+	overflow-x: scroll;
+	padding-block: var(--default-grid-baseline);
+	text-wrap: nowrap;
+	vertical-align: middle;
+	width: 100%;
+}
+
+.webhook__scrollable {
 	display: inline-block;
 	overflow-x: scroll;
 	padding-block: var(--default-grid-baseline);
