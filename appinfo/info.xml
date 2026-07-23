@@ -4,16 +4,22 @@
 	<id>orchestration_gateway</id>
 	<name>Orchestration Gateway</name>
 	<summary>Manage webhooks to orchestrate external workflows</summary>
-	<description>Manage webhooks to orchestrate external workflows
+	<description><![CDATA[A Nextcloud app that provides an admin settings UI to manage webhooks, enabling Nextcloud to trigger automations in external orchestration software.
 
-TODO TO BE WRITTEN</description>
+You can use this app to register, update and delete webhook listeners the the Nextcloud admin settings. Triggers can be set on Nextcloud events from Files, Forms, Tables, Calendar and many more. You can also configure event filters, user ID filters and which authorization tokens to include for every webhook. See the [webhook listeners documentation](https://docs.nextcloud.com/server/stable/admin_manual/webhook_listeners/index.html) for more information.
+
+The app includes a specialized for for for an easy set-up of webhooks with Budibase.]]></description>
 	<version>1.0.0</version>
 	<licence>AGPL-3.0-or-later</licence>
 	<author mail="jana.peper@nextcloud.com">Jana Peper</author>
 	<namespace>OrchestrationGateway</namespace>
 	<category>integration</category>
 	<category>organization</category>
-	<bugs>https://github.com/TODOERSETZEN</bugs>
+	<bugs>https://github.com/nextcloud/orchestration_gateway</bugs>
+	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot1.png</screenshot>
+	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot2.png</screenshot>
+	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot3.png</screenshot>
+	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot4.png</screenshot>
 	<dependencies>
 		<nextcloud min-version="35" max-version="35"/>
 	</dependencies>
