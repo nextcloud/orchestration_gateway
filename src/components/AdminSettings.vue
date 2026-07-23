@@ -6,7 +6,8 @@
 		</h2>
 		<NcSettingsSection
 			:name="t('orchestration_gateway', 'Webhook Listeners')"
-			:description="t('orchestration_gateway', 'here description of webhook listeners')">
+			:description="t('orchestration_gateway', 'Manage webhooks to orchestrate external workflows, triggering them when events in Nextcloud occur')"
+			:doc-url="webhooksDocUrl">
 			<div class="add__buttons">
 				<NcButton variant="secondary"
 					:text="t('orchestration_gateway', 'Register new webhook')"
@@ -40,9 +41,6 @@
 				:no-close="true">
 				<div class="webhookmodal__wrapper">
 					<h3>{{ t('orchestration_gateway', 'Register a new Budibase webhook') }}</h3>
-					<p class="settings-hint">
-						{{ t('orchestration_gateway', 'Configure your webhook to redirect back to {url}', { url: "test" }) }}
-					</p>
 					<BudibaseForm :webhook="newWebhook" @submit="onSubmit" @cancel-form="showNewBudibase=false" />
 				</div>
 			</NcModal>
@@ -133,6 +131,7 @@ export default {
 	data() {
 		return {
 			webhookListeners: loadState('orchestration_gateway', 'webhook-listeners'),
+			webhooksDocUrl: loadState('orchestration_gateway', 'webhooksDocUrl'),
 			showNewWebhook: false,
 			showNewBudibase: false,
 			editWebhook: null,
@@ -146,12 +145,15 @@ export default {
 		}
 	},
 
+<<<<<<< Updated upstream
 	computed: {
 	},
 
 	mounted() {
 	},
 
+=======
+>>>>>>> Stashed changes
 	methods: {
 		async deleteWebhook(webhook) {
 			await confirmPassword()
