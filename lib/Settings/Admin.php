@@ -13,6 +13,7 @@ use OCA\WebhookListeners\Db\WebhookListenerMapper;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IL10N;
+use OCP\IURLGenerator;
 use OCP\Settings\IDelegatedSettings;
 
 class Admin implements IDelegatedSettings {
@@ -21,6 +22,7 @@ class Admin implements IDelegatedSettings {
 		private IInitialState $initialStateService,
 		private WebhookEventService $eventService,
 		private WebhookListenerMapper $mapper,
+		private IURLGenerator $urlGenerator,
 		private IL10N $l10n,
 	) {
 	}
@@ -34,6 +36,7 @@ class Admin implements IDelegatedSettings {
 
 		$this->initialStateService->provideInitialState('webhook-listeners', $webhookListeners);
 		$this->initialStateService->provideInitialState('webhook-events', $events);
+		$this->initialStateService->provideInitialState('webhooksDocUrl', $this->urlGenerator->linkToDocs('webhook_listeners'));
 		return new TemplateResponse(Application::APP_ID, 'adminSettings');
 	}
 
