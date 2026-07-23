@@ -160,16 +160,6 @@ export default {
 		}
 	},
 
-<<<<<<< Updated upstream
-	computed: {
-	},
-
-	mounted() {
-		console.error(this.webhookListeners)
-	},
-
-=======
->>>>>>> Stashed changes
 	methods: {
 		async deleteWebhook(webhook) {
 			await confirmPassword()
