@@ -145,15 +145,6 @@ export default {
 		}
 	},
 
-<<<<<<< Updated upstream
-	computed: {
-	},
-
-	mounted() {
-	},
-
-=======
->>>>>>> Stashed changes
 	methods: {
 		async deleteWebhook(webhook) {
 			await confirmPassword()
