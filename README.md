@@ -1,25 +1,12 @@
 # Orchestration Gateway
 
-A template to get started with Nextcloud app development.
+A Nextcloud app that provides an admin settings UI to manage webhooks, enabling Nextcloud to trigger automations in external orchestration software.
 
-## Usage
+You can use this app to register, update and delete webhook listeners the the Nextcloud admin settings. Triggers can be set on Nextcloud events from Files, Forms, Tables, Calendar and many more. You can also configure event filters, user ID filters and which authorization tokens to include for every webhook. See the [webhook listeners documentation](https://docs.nextcloud.com/server/stable/admin_manual/webhook_listeners/index.html) for more information.
 
-- To get started easily use the [Appstore App generator](https://apps.nextcloud.com/developer/apps/generate) to
-  dynamically generate an App based on this repository with all the constants prefilled.
-- Alternatively you can use the "Use this template" button on the top of this page to create a new repository based on
-  this repository. Afterwards adjust all the necessary constants like App ID, namespace, descriptions etc.
+The app includes a specialized for for for an easy set-up of webhooks with Budibase.
 
-Once your app is ready follow the [instructions](https://nextcloudappstore.readthedocs.io/en/latest/developer.html) to
-upload it to the Appstore.
 
-## Resources
+![Settings overview screenshot](img/Screenshot1.png)
+![New webhook registration screenshot](img/Screenshot2.png)
 
-### Documentation for developers:
-
-- General documentation and tutorials: https://nextcloud.com/developer
-- Technical documentation: https://docs.nextcloud.com/server/latest/developer_manual
-
-### Help for developers:
-
-- Official community chat: https://cloud.nextcloud.com/call/xs25tz5y
-- Official community forum: https://help.nextcloud.com/c/dev/11
