@@ -79,16 +79,16 @@ export default {
 			required: true,
 		},
 		eventFilter: {
-			type: String,
-			required: true,
+			type: Array,
+			default: () => [],
 		},
 		userIdFilter: {
 			type: String,
-			required: true,
+			default: '',
 		},
 		tokenNeeded: {
-			type: String,
-			required: true,
+			type: Array,
+			default: () => [],
 		},
 	},
 

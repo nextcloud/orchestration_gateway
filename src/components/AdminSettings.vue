@@ -152,9 +152,9 @@ export default {
 				uri: '',
 				httpMethod: 'POST',
 				event: '',
-				eventFilter: [],
+				eventFilter: undefined,
 				userIdFilter: '',
-				tokenNeeded: [],
+				tokenNeeded: undefined,
 				headers: undefined,
 			},
 		}
@@ -180,9 +180,20 @@ export default {
 		async onSubmit(webhook) {
 			await confirmPassword()
 			console.debug('Add new webhook', { data: webhook })
-
-			webhook.eventFilter = JSON.parse(webhook.eventFilterJson)
-			webhook.tokenNeeded = JSON.parse(webhook.includeAuth)
+			try {
+				webhook.eventFilter = webhook.eventFilterJson ? JSON.parse(webhook.eventFilterJson) : []
+			} catch (error) {
+				console.error('Could not register a webhook: event filter is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not register webhook: event filter is no valid JSON'))
+				return
+			}
+			try {
+				webhook.tokenNeeded = webhook.includeAuth ? JSON.parse(webhook.includeAuth) : []
+			} catch (error) {
+				console.error('Could not register a webhook: authentication is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not register webhook: authentication is no valid JSON'))
+				return
+			}
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks')
 			try {
 				const response = await axios.post(url, webhook)
@@ -193,7 +204,7 @@ export default {
 				this.showNewBudibase = false
 			} catch (error) {
 				console.error('Could not register a webhook: ' + error.message, { error })
-				showError(t('user_oidc', 'Could not register webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
+				showError(t('orchestration_gateway', 'Could not register webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
 			}
 		},
 		updateWebhook(webhook) {
@@ -203,8 +214,20 @@ export default {
 			await confirmPassword()
 			console.debug('Update webhook', { data: webhook })
 
-			webhook.eventFilter = JSON.parse(webhook.eventFilterJson)
-			webhook.tokenNeeded = JSON.parse(webhook.includeAuth)
+			try {
+				webhook.eventFilter = webhook.eventFilterJson ? JSON.parse(webhook.eventFilterJson) : []
+			} catch (error) {
+				console.error('Could not update a webhook: event filter is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not update webhook: event filter is no valid JSON'))
+				return
+			}
+			try {
+				webhook.tokenNeeded = webhook.includeAuth ? JSON.parse(webhook.includeAuth) : []
+			} catch (error) {
+				console.error('Could not update a webhook: authentication is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not update webhook: authentication is no valid JSON'))
+				return
+			}
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks/{id}', { id: webhook.id })
 			try {
 				await axios.post(url, webhook)
@@ -213,7 +236,7 @@ export default {
 				this.webhookListeners[index] = webhook
 			} catch (error) {
 				console.error('Could not update the webhook: ' + error.message, { error })
-				showError(t('user_oidc', 'Could not update the webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
+				showError(t('orchestration_gateway', 'Could not update the webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
 			}
 		},
 	},
