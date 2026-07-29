@@ -31,8 +31,9 @@ class WebhookEventService {
 
 		$filteredEvent = array_filter($events, fn ($value) => $value['path'] === $path);
 		$event = reset($filteredEvent);
-
-		return $event['parameters'];
+		$schema = $event['parameters'];
+		$schema['authentication'] = 'array';
+		return $schema;
 	}
 
 	/**

@@ -52,13 +52,22 @@
 							{{ t('orchestration_gateway', 'ID') }}
 						</th>
 						<th>
-							{{ t('orchestration_gateway', 'URI') }}
-						</th>
-						<th>
 							{{ t('orchestration_gateway', 'Event') }}
 						</th>
 						<th>
 							{{ t('orchestration_gateway', 'HTTP Method') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'URI') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'Event Filter') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'User ID Filter') }}
+						</th>
+						<th>
+							{{ t('orchestration_gateway', 'Include authorization for users') }}
 						</th>
 						<th>
 							<span class="hidden-visually">{{ t('orchestration_gateway', 'Update or delete listener') }}</span>
@@ -73,6 +82,9 @@
 						:uri="webhook.uri"
 						:event="webhook.event"
 						:method="webhook.httpMethod"
+						:event-filter="webhook.eventFilter"
+						:user-id-filter="webhook.userIdFilter"
+						:token-needed="webhook.tokenNeeded"
 						@edit="updateWebhook(webhook)"
 						@delete="deleteWebhook(webhook)" />
 				</tbody>
@@ -138,8 +150,11 @@ export default {
 			newWebhook: {
 				id: '',
 				uri: '',
-				httpMethod: '',
+				httpMethod: 'POST',
 				event: '',
+				eventFilter: undefined,
+				userIdFilter: '',
+				tokenNeeded: undefined,
 				headers: undefined,
 			},
 		}
@@ -165,7 +180,20 @@ export default {
 		async onSubmit(webhook) {
 			await confirmPassword()
 			console.debug('Add new webhook', { data: webhook })
-
+			try {
+				webhook.eventFilter = webhook.eventFilterJson ? JSON.parse(webhook.eventFilterJson) : []
+			} catch (error) {
+				console.error('Could not register a webhook: event filter is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not register webhook: event filter is no valid JSON'))
+				return
+			}
+			try {
+				webhook.tokenNeeded = webhook.includeAuth ? JSON.parse(webhook.includeAuth) : []
+			} catch (error) {
+				console.error('Could not register a webhook: authentication is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not register webhook: authentication is no valid JSON'))
+				return
+			}
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks')
 			try {
 				const response = await axios.post(url, webhook)
@@ -176,7 +204,7 @@ export default {
 				this.showNewBudibase = false
 			} catch (error) {
 				console.error('Could not register a webhook: ' + error.message, { error })
-				showError(t('user_oidc', 'Could not register webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
+				showError(t('orchestration_gateway', 'Could not register webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
 			}
 		},
 		updateWebhook(webhook) {
@@ -186,6 +214,20 @@ export default {
 			await confirmPassword()
 			console.debug('Update webhook', { data: webhook })
 
+			try {
+				webhook.eventFilter = webhook.eventFilterJson ? JSON.parse(webhook.eventFilterJson) : []
+			} catch (error) {
+				console.error('Could not update a webhook: event filter is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not update webhook: event filter is no valid JSON'))
+				return
+			}
+			try {
+				webhook.tokenNeeded = webhook.includeAuth ? JSON.parse(webhook.includeAuth) : []
+			} catch (error) {
+				console.error('Could not update a webhook: authentication is no valid JSON', { error })
+				showError(t('orchestration_gateway', 'Could not update webhook: authentication is no valid JSON'))
+				return
+			}
 			const url = generateOcsUrl('/apps/webhook_listeners/api/v1/webhooks/{id}', { id: webhook.id })
 			try {
 				await axios.post(url, webhook)
@@ -194,7 +236,7 @@ export default {
 				this.webhookListeners[index] = webhook
 			} catch (error) {
 				console.error('Could not update the webhook: ' + error.message, { error })
-				showError(t('user_oidc', 'Could not update the webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
+				showError(t('orchestration_gateway', 'Could not update the webhook:') + ' ' + (error.response?.data?.ocs?.data?.message ?? error.message))
 			}
 		},
 	},
@@ -213,12 +255,13 @@ export default {
 
 .webhooks__table {
 		width: 100%;
+		max-width: 50%;
 		border-collapse: collapse;
 		table-layout: fixed;
 
 		th, td {
 			overflow: hidden;
-			padding: var(--default-grid-baseline);
+			padding: 5px 10px 5px 10px;
 			text-wrap: wrap;
 			overflow-wrap: break-word;
 		}
@@ -227,20 +270,8 @@ export default {
 			border-top: 1px solid var(--color-border);
 		}
 
-		th:nth-of-type(2), td:nth-of-type(2) {
-			width: 40%;
-		}
-
-		th:nth-of-type(3), td:nth-of-type(3) {
-			width: 40%;
-		}
-
-		th:nth-of-type(4), td:nth-of-type(4) {
-			width: 10%;
-		}
-
 		// the action column only needs to have the button size
-		th:nth-of-type(5), td:nth-of-type(5) {
+		th:nth-of-type(8), td:nth-of-type(8) {
 			width: calc(2 * var(--default-clickable-area) + 3 * 5px);
 		}
 	}

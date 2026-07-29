@@ -39,11 +39,11 @@ class WebhooksController extends Controller {
 			return new DataResponse('Invalid schema URL', Http::STATUS_BAD_REQUEST);
 		}
 		try {
-			try {
-				$params = $this->eventService->getSchema($event);
-			} catch (\Throwable $e) {
-				return new DataResponse('Failed to get the event schema', Http::STATUS_BAD_REQUEST);
-			}
+			$params = $this->eventService->getSchema($event);
+		} catch (\Throwable $e) {
+			return new DataResponse('Failed to get the event schema', Http::STATUS_BAD_REQUEST);
+		}
+		try {
 			$response = $this->apiService->request($url, params: $params, method: 'POST', isJson: true);
 		} catch (Exception $e) {
 			return new DataResponse($e->getMessage(), Http::STATUS_BAD_REQUEST);

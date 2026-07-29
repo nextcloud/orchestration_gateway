@@ -16,8 +16,7 @@
 			<label for="webhook-schema-url">{{ t('orchestration_gateway', 'Schema URL') }}</label>
 			<input id="webhook-schema-url"
 				v-model="schemaUrl"
-				type="text"
-				required>
+				type="text">
 		</p>
 		<NcButton variant="secondary"
 			:text="t('orchestration_gateway', 'Send schema request')"
@@ -29,6 +28,24 @@
 				v-model="localWebhook.uri"
 				type="text"
 				required>
+		</p>
+		<p>
+			<label for="webhook-event-filter">{{ t('orchestration_gateway', 'Event Filter') }}</label>
+			<input id="webhook-event-filter"
+				v-model="localWebhook.eventFilterJson"
+				type="text">
+		</p>
+		<p>
+			<label for="webhook-user-filter">{{ t('orchestration_gateway', 'User ID Filter') }}</label>
+			<input id="webhook-user-filter"
+				v-model="localWebhook.userIdFilter"
+				type="text">
+		</p>
+		<p>
+			<label for="webhook-auth">{{ t('orchestration_gateway', 'Include authorization for users') }}</label>
+			<input id="webhook-auth"
+				v-model="localWebhook.includeAuth"
+				type="text">
 		</p>
 
 		<div class="webhook-edit--footer">
@@ -94,7 +111,8 @@ export default {
 	created() {
 		this.localWebhook = {
 			...this.webhook,
-			httpMethod: 'POST',
+			eventFilterJson: JSON.stringify(this.webhook.eventFilter),
+			includeAuth: JSON.stringify(this.webhook.tokenNeeded),
 			headers: { 'Content-Type': 'application/json' },
 		}
 	},
