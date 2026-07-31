@@ -21,7 +21,7 @@ The app includes a specialized form to easily set up webhooks with Budibase.]]><
 	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot3.png</screenshot>
 	<screenshot>https://github.com/nextcloud/orchestration_gateway/raw/main/img/Screenshot4.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="35" max-version="35"/>
+		<nextcloud min-version="34" max-version="35"/>
 	</dependencies>
 	<settings>
 		<admin>OCA\OrchestrationGateway\Settings\Admin</admin>
