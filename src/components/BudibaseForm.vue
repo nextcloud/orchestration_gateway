@@ -35,18 +35,19 @@
 				v-model="localWebhook.eventFilterJson"
 				type="text">
 		</p>
-		<p>
+		<div class="webhook-edit__row">
 			<label for="webhook-user-filter">{{ t('orchestration_gateway', 'User ID Filter') }}</label>
-			<input id="webhook-user-filter"
-				v-model="localWebhook.userIdFilter"
-				type="text">
-		</p>
-		<p>
+			<MultiselectWho id="webhook-user-filter"
+				class="webhook-user-filter"
+				:value="userIdFilterSelection"
+				:multiple="false"
+				:placeholder="t('orchestration_gateway', 'Filter by user…')"
+				@update:value="userIdFilterSelection = $event" />
+		</div>
+		<div class="webhook-edit__row">
 			<label for="webhook-auth">{{ t('orchestration_gateway', 'Include authorization for users') }}</label>
-			<input id="webhook-auth"
-				v-model="localWebhook.includeAuth"
-				type="text">
-		</p>
+			<AuthorizationPicker v-model="localWebhook.tokenNeeded" />
+		</div>
 
 		<div class="webhook-edit--footer">
 			<NcButton @click="$emit('cancel-form')">
@@ -54,7 +55,7 @@
 			</NcButton>
 			<NcButton variant="primary"
 				:disabled="!localWebhook.event || !localWebhook.uri"
-				@click="$emit('submit', localWebhook)">
+				@click="submitForm">
 				<template #icon>
 					<CheckIcon :size="20" />
 				</template>
@@ -74,9 +75,14 @@ import NcSelect from '@nextcloud/vue/components/NcSelect'
 
 import axios from '@nextcloud/axios'
 
+import AuthorizationPicker from './AuthorizationPicker.vue'
+import MultiselectWho from './MultiselectWho.vue'
+
 export default {
 	name: 'BudibaseForm',
 	components: {
+		AuthorizationPicker,
+		MultiselectWho,
 		NcButton,
 		CheckIcon,
 		NcSelect,
@@ -104,21 +110,31 @@ export default {
 			availableEvents: loadState('orchestration_gateway', 'webhook-events'),
 			localWebhook: null,
 			schemaUrl: null,
+			userIdFilterSelection: [],
 		}
-	},
-	computed: {
 	},
 	created() {
 		this.localWebhook = {
 			...this.webhook,
 			eventFilterJson: JSON.stringify(this.webhook.eventFilter),
-			includeAuth: JSON.stringify(this.webhook.tokenNeeded),
 			headers: { 'Content-Type': 'application/json' },
 		}
-	},
-	mounted() {
+		if (this.webhook.userIdFilter) {
+			this.userIdFilterSelection = [{
+				entityId: this.webhook.userIdFilter,
+				type: 'user',
+				displayName: this.webhook.userIdFilter,
+				id: 'user-' + this.webhook.userIdFilter,
+			}]
+		}
 	},
 	methods: {
+		submitForm() {
+			this.$emit('submit', {
+				...this.localWebhook,
+				userIdFilter: this.userIdFilterSelection[0]?.entityId ?? '',
+			})
+		},
 
 		async sendSchema() {
 			const url = generateUrl('/apps/orchestration_gateway/send-schema')
@@ -166,7 +182,7 @@ export default {
 		background-color: var(--color-background-dark);
 	}
 
-	p {
+	p, .webhook-edit__row {
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -184,7 +200,8 @@ export default {
 		}
 	}
 
-	.webhook-event {
+	.webhook-event,
+	.webhook-user-filter {
 		flex-grow: 1;
 	}
 }
