@@ -41,7 +41,7 @@
 				class="webhook-user-filter"
 				:value="userIdFilterSelection"
 				:multiple="false"
-				:placeholder="t('orchestration_gateway', 'Filter by user…')"
+				:placeholder="t('orchestration_gateway', 'Filter by user')"
 				@update:value="userIdFilterSelection = $event" />
 		</div>
 		<div class="webhook-edit__row">

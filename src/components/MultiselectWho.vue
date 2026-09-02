@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { getCurrentUser } from '@nextcloud/auth'
 import { generateOcsUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
@@ -88,6 +89,7 @@ export default {
 			loadingSuggestions: false,
 			suggestions: [],
 			query: '',
+			currentUser: getCurrentUser(),
 		}
 	},
 
@@ -114,6 +116,24 @@ export default {
 						id: 'user-' + s.id,
 					}
 				})
+
+			if (this.currentUser && this.query) {
+				const lowerCurrent = this.currentUser.displayName.toLowerCase()
+				const lowerQuery = this.query.toLowerCase()
+				if (
+					lowerCurrent.match(lowerQuery)
+					&& !this.value.find(
+						(u) => u.type === 'user' && u.entityId === this.currentUser.uid,
+					)
+				) {
+					result.push({
+						entityId: this.currentUser.uid,
+						type: 'user',
+						displayName: this.currentUser.displayName,
+						id: 'user-' + this.currentUser.uid,
+					})
+				}
+			}
 
 			return result
 		},
